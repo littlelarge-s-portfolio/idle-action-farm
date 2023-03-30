@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using TMPro;
 using UnityEngine.UI;
 
@@ -16,13 +15,16 @@ public class CashUI : MonoBehaviour
     private void Awake()
     {
         _cash = GetComponent<Cash>();
+    }
 
+    private void Start()
+    {
         Init();
     }
     #endregion
 
     #region Methods
-    public void Init()
+    private void Init()
     {
         _cash.OnChanged.AddListener(UpdateUI);
     }

@@ -1,41 +1,44 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using DG.Tweening;
-using UnityEngine;
-using UnityEngine.Events;
+﻿using UnityEngine;
 
-public class Wheat : MonoBehaviour, IItem, ISaleable
+public class Wheat : MonoBehaviour, IPlant
 {
     #region Variables
-    public float Cost { get; } = 10f;
+    private WheatStateManager _wheatStateManager;
+    private WheatData _wheatData;
+    private WheatUIManager _wheatUIManager;
+    private ICutter _cutter;
+
+    public WheatStateManager StateManager { get { return _wheatStateManager; } }
+    public IPlantData Data { get { return _wheatData; } }
+    public IPlantUIManager UIManager { get { return _wheatUIManager; } }
+    public ICutter Cutter { get { return _cutter; } set { _cutter = value; } }
     #endregion
 
     #region UnityMethods
+    public void Awake()
+    {
+        _wheatStateManager = GetComponent<WheatStateManager>();
+        _wheatData = GetComponent<WheatData>();
+        _wheatUIManager = GetComponentInChildren<WheatUIManager>();
+    }
     #endregion
 
     #region Methods
-    public void Up(IInventory inventory)
+    public void SpawnPlantBlock()
     {
-        inventory.AddItem(this);
+        Rigidbody wheatBlock = Instantiate(_wheatData.PrefabData.PlantBlock, transform.position, Quaternion.identity).GetComponent<Rigidbody>();
 
-        Destroy();
+        float force = 5f;
+        float randomizeValue = 25;
+
+        Vector3 randomDirection = new Vector3(Random.Range(-randomizeValue, randomizeValue), 1, Random.Range(-randomizeValue, randomizeValue));
+
+        wheatBlock.AddForce(randomDirection * force);
     }
 
-    public void Sell(IBuyer buyer, IInventory inventory)
+    public Transform GetTransform()
     {
-        buyer.Buy(this);
-        inventory.RemoveItem(this);
-    }
-
-    private void Destroy()
-    {
-        DestroyAnimation();
-    }
-
-    private void DestroyAnimation()
-    {
-        transform.DOScale(transform.lossyScale * 1.4f, .15f).OnComplete(() => transform.DOScale(0f, 3f)).OnComplete(() => Destroy(gameObject));
+        return transform;
     }
     #endregion
 }
-

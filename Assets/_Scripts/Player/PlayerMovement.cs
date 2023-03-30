@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using DG.Tweening;
 
 public class PlayerMovement : MonoBehaviour, IMoveable
 {
@@ -35,6 +35,25 @@ public class PlayerMovement : MonoBehaviour, IMoveable
             float angle = Mathf.Atan2(direction.x, direction.y) * 180 / Mathf.PI;
             transform.rotation = Quaternion.Euler(transform.rotation.x, angle, transform.rotation.z);
         }
+    }
+
+    public void Freeze()
+    {
+        _rigidbody.isKinematic = true;
+        _playerInput.FreezeInput();
+    }
+
+    public void Unfreeze()
+    {
+        _rigidbody.isKinematic = false;
+        _playerInput.UnfreezeInput();
+    }
+
+    public void LookAt(Vector3 targetPosition)
+    {
+        Vector3 newTargetPos = new Vector3(targetPosition.x, transform.position.y, targetPosition.z);
+
+        transform.DOLookAt(newTargetPos, .25f);
     }
     #endregion
 }

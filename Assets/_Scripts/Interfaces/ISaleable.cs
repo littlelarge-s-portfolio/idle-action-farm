@@ -1,6 +1,4 @@
-﻿using System;
-
-public interface ISaleable
+﻿public interface ISaleable
 {
     public float Cost { get; }
 
